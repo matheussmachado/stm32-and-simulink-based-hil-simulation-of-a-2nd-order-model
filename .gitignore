@@ -1,0 +1,11 @@
+stuff/
+octave-workspace
+*.mat
+Debug/
+Release/
+.metadata/
+.settings/
+*.launch
+.cproject
+.project
+.mxproject
