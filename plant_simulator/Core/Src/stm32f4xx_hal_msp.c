@@ -190,10 +190,10 @@ void HAL_DAC_MspInit(DAC_HandleTypeDef* hdac)
     /**DAC GPIO Configuration
     PA4     ------> DAC_OUT1
     */
-    GPIO_InitStruct.Pin = DAC_SIM_PLANT_OUT_Pin;
+    GPIO_InitStruct.Pin = DAC_SIM_PLANT_OUTPUT_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(DAC_SIM_PLANT_OUT_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(DAC_SIM_PLANT_OUTPUT_GPIO_Port, &GPIO_InitStruct);
 
     /* DAC DMA Init */
     /* DAC1 Init */
@@ -241,7 +241,7 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* hdac)
     /**DAC GPIO Configuration
     PA4     ------> DAC_OUT1
     */
-    HAL_GPIO_DeInit(DAC_SIM_PLANT_OUT_GPIO_Port, DAC_SIM_PLANT_OUT_Pin);
+    HAL_GPIO_DeInit(DAC_SIM_PLANT_OUTPUT_GPIO_Port, DAC_SIM_PLANT_OUTPUT_Pin);
 
     /* DAC DMA DeInit */
     HAL_DMA_DeInit(hdac->DMA_Handle1);
@@ -287,12 +287,12 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
     /**TIM4 GPIO Configuration
     PD12     ------> TIM4_CH1
     */
-    GPIO_InitStruct.Pin = PWM_IN_Pin;
+    GPIO_InitStruct.Pin = PWM_CONTROL_INPUT_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF2_TIM4;
-    HAL_GPIO_Init(PWM_IN_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(PWM_CONTROL_INPUT_GPIO_Port, &GPIO_InitStruct);
 
     /* TIM4 DMA Init */
     /* TIM4_CH2 Init */
@@ -364,7 +364,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
     /**TIM4 GPIO Configuration
     PD12     ------> TIM4_CH1
     */
-    HAL_GPIO_DeInit(PWM_IN_GPIO_Port, PWM_IN_Pin);
+    HAL_GPIO_DeInit(PWM_CONTROL_INPUT_GPIO_Port, PWM_CONTROL_INPUT_Pin);
 
     /* TIM4 DMA DeInit */
     HAL_DMA_DeInit(htim_base->hdma[TIM_DMA_ID_CC2]);

@@ -49,6 +49,8 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -58,14 +60,10 @@ void Error_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
 #define PWM_COUNTER_PERIOD 1000-1
-#define PIN_PWR_ON_CONTROLLER_Pin GPIO_PIN_1
-#define PIN_PWR_ON_CONTROLLER_GPIO_Port GPIOA
-#define ADC_ACTUAL_HW_OUT_Pin GPIO_PIN_2
-#define ADC_ACTUAL_HW_OUT_GPIO_Port GPIOA
-#define DAC_SIM_PLANT_OUTPUT_Pin GPIO_PIN_4
-#define DAC_SIM_PLANT_OUTPUT_GPIO_Port GPIOA
-#define PWM_CONTROL_INPUT_Pin GPIO_PIN_12
-#define PWM_CONTROL_INPUT_GPIO_Port GPIOD
+#define ADC_PLANT_OUTPUT_Pin GPIO_PIN_1
+#define ADC_PLANT_OUTPUT_GPIO_Port GPIOA
+#define PWM_CONTROL_INPUT_Pin GPIO_PIN_8
+#define PWM_CONTROL_INPUT_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
