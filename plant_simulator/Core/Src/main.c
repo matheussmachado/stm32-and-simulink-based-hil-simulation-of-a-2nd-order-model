@@ -21,17 +21,29 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "string.h"
+#include "PlantModel.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+#define UART_BUF_SIZE 4
+#define UART_NUM_DATA 2
+#define DMA_UART_TX_BUF_SIZE (UART_NUM_DATA*UART_BUF_SIZE + 2)
 
+typedef union {
+  float single;
+  uint8_t bytes[UART_BUF_SIZE];
+} Float_t;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define ADC_DMA_BUF_SIZE 1
+#define VOLT_REF 3.33f
+#define VOLT_TO_DATA12  (0xfff/VOLT_REF)
+#define DATA12_TO_VOLT (VOLT_REF/0xfff)
+#define PWM_DUTY_TO_VOLT (VOLT_REF / (PWM_COUNTER_PERIOD))
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,7 +68,18 @@ DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart1_tx;
 
 /* USER CODE BEGIN PV */
+uint16_t dma_pwm_in_duty = 0;
 
+uint16_t dma_dac_analog_sensor = 0;
+uint16_t dma_adc = 0;
+
+uint8_t dma_uart_tx_buf[DMA_UART_TX_BUF_SIZE] = { 'S', 0, 0, 0, 0, 0, 0, 0, 0, '\n' };
+uint8_t uart_buf[UART_BUF_SIZE] = { 0 };
+int uart_rx_flag = 0;
+
+Float_t sim_serial_input1; // HIL Plant Model output
+Float_t sim_serial_input2; // Actual Hardware output
+Float_t sim_serial_output;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -115,7 +138,23 @@ int main(void)
   MX_TIM6_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  PlantModel_initialize();
 
+  HAL_TIM_Base_Start(&htim6);
+  HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*) &dma_dac_analog_sensor, (uint32_t) 1, DAC_ALIGN_12B_R);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*) &dma_adc, (uint32_t) 1);
+  HAL_UART_Receive_DMA(&huart1, sim_serial_output.bytes, UART_BUF_SIZE);
+  HAL_TIM_IC_Start_DMA(&htim4, TIM_CHANNEL_2, (uint32_t*) &dma_pwm_in_duty, (uint32_t) 1);
+
+//  HAL_Delay(5000);
+  while (!uart_rx_flag);
+  sim_serial_input1.single = 0.f;
+  memcpy(dma_uart_tx_buf+1, sim_serial_input1.bytes, UART_BUF_SIZE*sizeof(dma_uart_tx_buf[0]));
+  HAL_UART_Transmit_DMA(&huart1, dma_uart_tx_buf, DMA_UART_TX_BUF_SIZE);
+
+  dma_dac_analog_sensor = VOLT_TO_DATA12*sim_serial_output.single;
+  HAL_TIM_Base_Start_IT(&htim2);
+  HAL_GPIO_WritePin(PIN_PWR_ON_CONTROLLER_GPIO_Port, PIN_PWR_ON_CONTROLLER_Pin, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -515,7 +554,31 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+	if (huart->Instance == huart1.Instance) {
+		uart_rx_flag = 1;
+	}
+}
 
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	static int t = 0;
+	if (htim->Instance == htim2.Instance) {
+		if (t++ > 0) {
+			t = 0;
+
+			PlantModel_U.u = PWM_DUTY_TO_VOLT*dma_pwm_in_duty;
+			PlantModel_step();
+			dma_dac_analog_sensor = VOLT_TO_DATA12*PlantModel_Y.y;
+
+			sim_serial_input1.single = PlantModel_Y.y;
+			sim_serial_input2.single = DATA12_TO_VOLT*dma_adc;
+			memcpy(dma_uart_tx_buf+1+0*UART_BUF_SIZE, sim_serial_input1.bytes, UART_BUF_SIZE*sizeof(dma_uart_tx_buf[0]));
+			memcpy(dma_uart_tx_buf+1+1*UART_BUF_SIZE, sim_serial_input2.bytes, UART_BUF_SIZE*sizeof(dma_uart_tx_buf[0]));
+			HAL_UART_Transmit_DMA(&huart1, dma_uart_tx_buf, DMA_UART_TX_BUF_SIZE);
+		}
+	}
+}
 /* USER CODE END 4 */
 
 /**

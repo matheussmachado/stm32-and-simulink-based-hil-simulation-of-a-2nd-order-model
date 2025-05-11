@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'PlantModel'.
  *
- * Model version                  : 1.10
+ * Model version                  : 1.11
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Sat May 10 19:46:09 2025
+ * C/C++ source code generated on : Sat May 10 22:57:15 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-M

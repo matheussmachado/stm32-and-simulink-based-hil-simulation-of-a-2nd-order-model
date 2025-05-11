@@ -125,6 +125,7 @@ NVIC.PriorityGroup=NVIC_PRIORITYGROUP_4
 NVIC.SVCall_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false
 NVIC.SysTick_IRQn=true\:15\:0\:false\:false\:true\:false\:true\:false
 NVIC.TIM2_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
+NVIC.USART1_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.UsageFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false
 PA1.GPIOParameters=GPIO_PuPd,GPIO_Label,GPIO_ModeDefaultOutputPP
 PA1.GPIO_Label=PIN_PWR_ON_CONTROLLER

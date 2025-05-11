@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "ControllerModel.h"
+#include "ReferenceInputModel.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,7 +32,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define VOLT_REF 3.33f
+#define DATA12_TO_VOLT (VOLT_REF/0xfff)
+#define VOLT_TO_PWM_DUTY ((PWM_COUNTER_PERIOD)/VOLT_REF)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -48,7 +51,11 @@ TIM_HandleTypeDef htim2;
 DMA_HandleTypeDef hdma_tim1_ch1;
 
 /* USER CODE BEGIN PV */
+uint16_t dma_adc_sensor_input;
+uint16_t dma_pwm_duty_out;
+uint16_t pwm_out_duty;
 
+float y = 0.f, r = 1.f, e = 0.f, u = 0.f;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -101,6 +108,12 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  ControllerModel_initialize();
+  ReferenceInputModel_initialize();
+
+  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t*) &dma_pwm_duty_out, (uint32_t) 1);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*) &dma_adc_sensor_input, (uint32_t) 1);
+  HAL_TIM_Base_Start_IT(&htim2);
 
   /* USER CODE END 2 */
 
@@ -360,7 +373,20 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	if (htim->Instance == htim2.Instance) {
+		y = DATA12_TO_VOLT*dma_adc_sensor_input;
 
+		ReferenceInputModel_step();
+		r = ReferenceInputModel_Y.r;
+		e = r - y;
+		ControllerModel_U.e = e;
+		ControllerModel_step();
+		u = ControllerModel_Y.u;
+
+		dma_pwm_duty_out = VOLT_TO_PWM_DUTY*u;
+	}
+}
 /* USER CODE END 4 */
 
 /**

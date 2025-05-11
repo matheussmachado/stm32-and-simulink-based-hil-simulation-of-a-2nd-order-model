@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'PlantModel'.
  *
- * Model version                  : 1.10
+ * Model version                  : 1.11
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Sat May 10 19:46:09 2025
+ * C/C++ source code generated on : Sat May 10 22:57:15 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -74,14 +74,14 @@ typedef struct {
   boolean_T TransferFcn_CSTATE[2];     /* '<Root>/Transfer Fcn' */
 } XDis_PlantModel_T;
 
-#ifndef ODE3_INTG
-#define ODE3_INTG
+#ifndef ODE4_INTG
+#define ODE4_INTG
 
-/* ODE3 Integration Data */
+/* ODE4 Integration Data */
 typedef struct {
   real_T *y;                           /* output */
-  real_T *f[3];                        /* derivatives */
-} ODE3_IntgData;
+  real_T *f[4];                        /* derivatives */
+} ODE4_IntgData;
 
 #endif
 
@@ -108,8 +108,8 @@ struct tag_RTM_PlantModel_T {
   boolean_T derivCacheNeedsReset;
   boolean_T CTOutputIncnstWithState;
   real_T odeY[2];
-  real_T odeF[3][2];
-  ODE3_IntgData intgData;
+  real_T odeF[4][2];
+  ODE4_IntgData intgData;
 
   /*
    * Sizes:
