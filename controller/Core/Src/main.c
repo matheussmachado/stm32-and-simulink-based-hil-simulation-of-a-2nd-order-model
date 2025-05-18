@@ -51,9 +51,9 @@ TIM_HandleTypeDef htim2;
 DMA_HandleTypeDef hdma_tim1_ch1;
 
 /* USER CODE BEGIN PV */
-uint16_t dma_adc_sensor_input;
-uint16_t dma_pwm_duty_out;
-uint16_t pwm_out_duty;
+uint16_t dma_adc_sensor_input = 0;
+uint16_t dma_pwm_duty_out = 0;
+uint16_t pwm_out_duty = 0;
 
 float y = 0.f, r = 1.f, e = 0.f, u = 0.f;
 /* USER CODE END PV */
@@ -110,11 +110,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
   ControllerModel_initialize();
   ReferenceInputModel_initialize();
-
   HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t*) &dma_pwm_duty_out, (uint32_t) 1);
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*) &dma_adc_sensor_input, (uint32_t) 1);
   HAL_TIM_Base_Start_IT(&htim2);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */

@@ -71,7 +71,7 @@ DMA_HandleTypeDef hdma_usart1_tx;
 uint16_t dma_pwm_in_duty = 0;
 
 uint16_t dma_dac_analog_sensor = 0;
-uint16_t dma_adc = 0;
+uint16_t dma_adc_actual_hw_out = 0;
 
 uint8_t dma_uart_tx_buf[DMA_UART_TX_BUF_SIZE] = { 'S', 0, 0, 0, 0, 0, 0, 0, 0, '\n' };
 uint8_t uart_buf[UART_BUF_SIZE] = { 0 };
@@ -142,7 +142,7 @@ int main(void)
 
   HAL_TIM_Base_Start(&htim6);
   HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*) &dma_dac_analog_sensor, (uint32_t) 1, DAC_ALIGN_12B_R);
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t*) &dma_adc, (uint32_t) 1);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*) &dma_adc_actual_hw_out, (uint32_t) 1);
   HAL_UART_Receive_DMA(&huart1, sim_serial_output.bytes, UART_BUF_SIZE);
   HAL_TIM_IC_Start_DMA(&htim4, TIM_CHANNEL_2, (uint32_t*) &dma_pwm_in_duty, (uint32_t) 1);
 
@@ -572,7 +572,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			dma_dac_analog_sensor = VOLT_TO_DATA12*PlantModel_Y.y;
 
 			sim_serial_input1.single = PlantModel_Y.y;
-			sim_serial_input2.single = DATA12_TO_VOLT*dma_adc;
+			sim_serial_input2.single = DATA12_TO_VOLT*dma_adc_actual_hw_out;
 			memcpy(dma_uart_tx_buf+1+0*UART_BUF_SIZE, sim_serial_input1.bytes, UART_BUF_SIZE*sizeof(dma_uart_tx_buf[0]));
 			memcpy(dma_uart_tx_buf+1+1*UART_BUF_SIZE, sim_serial_input2.bytes, UART_BUF_SIZE*sizeof(dma_uart_tx_buf[0]));
 			HAL_UART_Transmit_DMA(&huart1, dma_uart_tx_buf, DMA_UART_TX_BUF_SIZE);
