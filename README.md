@@ -2,7 +2,7 @@
 
 ## About
 
-TThis project consists of developing a Hardware-in-the-Loop (HIL) test setup using two microcontrollers: one to run the physical plant model and another to run the designed controller. The plant is modeled based on the parameters of a 2nd-order Butterworth low-pass filter, which was also implemented as a physical circuit for comparison purposes due to its simplicity and availability in practice.
+This project consists of developing a Hardware-in-the-Loop (HIL) test setup using two microcontrollers: one to run the physical plant model and another to run the designed controller. The plant is modeled based on the parameters of a 2nd-order Butterworth low-pass filter, which was also implemented as a physical circuit for comparison purposes due to its simplicity and availability in practice.
 
 MATLAB and Simulink were used for plant modeling, controller design, and the HIL test itself. The goal of this project is to provide a practical setup for developing and validating real-time control systems that can be reused, improved, and expanded for other applications.
 
