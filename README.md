@@ -14,6 +14,11 @@ MATLAB and Simulink were used for plant modeling, controller design, and the HIL
 
 https://github.com/user-attachments/assets/47358cbd-f617-43dd-8a0a-f05c09b67609
 
+Legend:
+- **r**: Reference input (Calculated in Simulink)
+- **y_sim**: Simulated plant output (Calculated in Simulink)
+- **y_HIL**: Simulated plant output (Calculated in Plant Simulator - MCU)
+- **y_actual_hw**: Real plant output
 
 ## Features
 
