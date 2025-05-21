@@ -36,7 +36,7 @@ Legend:
 
 Initially, the control system was modeled in a simple way **(a)**, and later modularized into blocks **(b)** to generate code for each component. The models were configured with a fixed-step solver and a sampling time of 50 ms. The plant model used the ode4 (Runge-Kutta) solver. The file SystemParameters.m defines the physical parameters of the plant, i.e., the values of the analog filter circuit components. 
 
-Simulink Embedded Coder was used with the Quick Start option to generate C code. The configuration selected was ARM-compatible (Cortex-M) and optimized for Execution Efficiency. The following settings were manually reverted to the values below:
+**Simulink Embedded Coder** was used with the Quick Start option to generate C code. The configuration selected was ARM-compatible (Cortex-M) and optimized for Execution Efficiency. The following settings were manually reverted to the values below:
 
 1. Code Generation -> Identifiers
 - Constant macros: \$R\$N\$M
@@ -52,7 +52,7 @@ After code generation, all real numbers (initially defined as double) were manua
 ## Hardware/Firmware and Signal Interfacing Aspects
 
 ### Controller
-- Timer: 220 kHz (for 50 ms fixed sampling time).
+- Timer: 20 kHz (for 50 ms fixed sampling time).
 - PWM: 1 kHz (used for control input signal).
 - ADC: For feedback from the output voltage signal.
 
