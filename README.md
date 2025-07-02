@@ -52,12 +52,12 @@ After code generation, all real numbers (initially defined as double) were manua
 ## Hardware/Firmware and Signal Interfacing Aspects
 
 ### Controller
-- Timer: 20 kHz (for 50 ms fixed sampling time).
+- Timer: 20 Hz (for 50 ms fixed sampling time).
 - PWM: 1 kHz (used for control input signal).
 - ADC: For feedback from the output voltage signal.
 
 ### Target Hardware
-- Timer: 40 kHz (model step every 20 kHz).
+- Timer: 40 Hz (model step every 20 Hz).
 - Input Capture: 1 kHz (to acquire the PWM duty cycle from the controller).
 - DAC: Outputs the analog signal from the simulated plant.
 - ADC: Reads the output voltage from the real plant (Actual Hardware).
